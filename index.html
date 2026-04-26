@@ -347,7 +347,7 @@
             font-size: 9px;
             padding: 6px 8px;
             min-width: 90px;
-            height: 40px;
+            height: 35px;
             background: #111;
             border: 1px solid transparent;
             margin: 0;
@@ -421,7 +421,7 @@
 
             <div class="control-group">
                 <button id="btnReset" class="btn-footer" onclick="resetPointsOnly()">RESET SKOR</button>
-                <button id="btnWakeLock" class="btn-footer" onclick="toggleWakeLock()">STAY AWAKE: OFF</button>
+                <button id="btnWakeLock" class="btn-footer" onclick="toggleWakeLock()">LAYAR NYALA: OFF</button>
                 <button id="btnMainMenu" class="btn-footer" onclick="goToMainMenu()">MENU UTAMA</button>
             </div>
         </div>
@@ -660,11 +660,11 @@
             if (!wakeLock) {
                 try {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    btn.innerText = "STAY AWAKE: ON";
+                    btn.innerText = "LAYAR NYALA: ON";
                     btn.classList.add('active-status');
                     wakeLock.addEventListener('release', () => {
                         wakeLock = null;
-                        btn.innerText = "STAY AWAKE: OFF";
+                        btn.innerText = "LAYAR NYALA: OFF";
                         btn.classList.remove('active-status');
                     });
                 } catch (err) {}
