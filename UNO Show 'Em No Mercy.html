@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UNO No Mercy Helper</title>
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/digital-numbers');
+
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f0f0f;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 340px;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .fade-in {
+            animation: fadeInSlide 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            height: 120px; 
+        }
+
+        img.logo {
+            width: 160px;
+            filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 1)) 
+            drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.8));
+        }
+
+
+        .arrow-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px;
+            box-shadow: none;
+            text-shadow: none;
+        }
+
+        .arrow-btn:active {
+            transform: scale(0.9);
+            background: none;
+        }
+
+        h3 {
+            margin: 0 0 10px 0;
+            font-weight: 400;
+            color: #bbb;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background: #2d2d2d;
+            color: white;
+            font-size: 15px;
+            text-align: center;
+            outline: none;
+        }
+
+        button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: 1px solid #444;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: #262626;
+            color: white;
+            box-shadow: 0 4px 0 #000;
+            transition: all 0.1s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #000;
+            background: #1a1a1a;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .wheel-outer {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #spinImage {
+            width: 100px;
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .clockwise {
+            animation: spin-cw 3s linear infinite;
+        }
+
+        .counter-clockwise {
+            animation: spin-ccw 3s linear infinite;
+        }
+
+        @keyframes spin-cw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-ccw {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        #currentDirection {
+            font-weight: bold;
+            color: #ffffff;
+            margin: 5px 0 5px 0;
+            font-size: 14px;
+            height: 20px;
+            line-height: 20px;
+        }
+
+        #gameTimer {
+            font-family: 'Digital Numbers', sans-serif;
+            color: #b0b0b0;
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .score-list {
+            width: 100%;
+            margin-top: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .player-card {
+            background: #262626;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 15px;
+            text-align: left;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            min-height: 115px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .player-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #eee;
+        }
+
+        .score-input {
+            width: 70px;
+            padding: 5px;
+            background: #000;
+            color: #ff4757;
+            border: 1px solid #444;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            font-family: 'Digital Numbers', sans-serif;
+        }
+
+        .quick-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            min-width: 45px;
+            padding: 7px 0;
+            font-size: 10px;
+            margin: 0;
+            background: #333;
+            flex: 1;
+        }
+
+        .number-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+            z-index: 100;
+            border: 1px solid #444;
+            width: 220px;
+        }
+
+        .overlay-popup {
+            animation: fadeInScale 0.25s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .num-btn {
+            width: 55px;
+            height: 50px;
+            padding: 0;
+            min-width: 0;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .calc-display {
+            grid-column: span 3;
+            background: #111;
+            color: #ff4757;
+            text-align: right;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Digital Numbers', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            border: 1px solid #444;
+            min-height: 25px;
+            word-wrap: break-word;
+            overflow-x: auto;
+        }
+
+        .close-btn {
+            grid-column: span 3;
+            height: 50px;
+            background: #444;
+            font-size: 11px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .add-btn {
+            grid-column: span 1;
+            height: 50px;
+            background: #333;
+            font-size: 22px;
+            color: #2ecc71;
+        }
+
+        .equal-btn {
+            grid-column: span 1;
+            height: 50px;
+            background: #2ecc71;
+            font-size: 22px;
+            color: white;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-footer {
+            font-size: 9px;
+            padding: 6px 8px;
+            min-width: 90px;
+            height: 40px;
+            background: #111;
+            border: 1px solid transparent;
+            margin: 0;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+
+        .active-status {
+            background: #1b3d2a !important;
+            color: #2ecc71 !important;
+            border-color: #2ecc71 !important;
+        }
+
+        #winMessage {
+            color: #2ecc71;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="clickSound" src="click.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="music.mp3" preload="auto" loop></audio>
+
+    <div class="container">
+        <div id="screen-menu" class="fade-in">
+            <div class="logo-wrapper">
+                <button class="arrow-btn" onclick="playClick(); toggleLogo()">&#10094;</button>
+                <img src="logo.png" id="mainLogo" class="logo" onerror="this.src='https://placehold.co/200x120/ff4757/ffffff?text=UNO+NO+MERCY'">
+                <button class="arrow-btn" onclick="playClick(); toggleLogo()">&#10095;</button>
+            </div>
+            <br>
+            <button onclick="startApp()">START GAME</button>
+        </div>
+
+        <div id="screen-count" class="hidden">
+            <h3>Jumlah Pemain</h3>
+            <input type="number" id="playerCount" min="2" max="10" value="2">
+            <button onclick="playClick(); setupPlayers()">NEXT</button>
+        </div>
+
+        <div id="screen-names" class="hidden">
+            <h3>Nama Pemain</h3>
+            <div id="playerInputs"></div>
+            <button onclick="playClick(); showScreen('screen-spin')">NEXT</button>
+        </div>
+
+        <div id="screen-spin" class="hidden">
+            <h3>Mulai Duluan:</h3>
+            <h1 id="firstPlayer" style="color: #ff4757; font-size: 28px; margin: 15px 0;">?</h1>
+            <button onclick="playClick(); spinFirstPlayer()">SPIN!</button>
+            <br>
+            <button id="btnAfterSpin" class="hidden" onclick="playClick(); startGame()">MASUK GAME</button>
+        </div>
+
+        <div id="screen-game" class="hidden">
+            <div class="wheel-outer">
+                <img src="spin.png" id="spinImage" class="clockwise" onerror="this.src='https://placehold.co/100x100/ff4757/ffffff?text=SPIN'">
+            </div>
+            <p id="currentDirection">Arah: Searah Jarum Jam</p>
+            <div id="gameTimer">00:00</div>
+            <button id="btnReverse" onclick="playClick(); toggleReverse()">REVERSE</button>
+
+            <div id="winMessage" class="hidden"></div>
+
+            <div class="score-list" id="finalScoreList"></div>
+
+            <div class="control-group">
+                <button id="btnReset" class="btn-footer" onclick="resetPointsOnly()">RESET SKOR</button>
+                <button id="btnWakeLock" class="btn-footer" onclick="toggleWakeLock()">STAY AWAKE: OFF</button>
+                <button id="btnMainMenu" class="btn-footer" onclick="goToMainMenu()">MENU UTAMA</button>
+            </div>
+        </div>
+
+        <div id="numberPicker" class="number-overlay hidden"></div>
+    </div>
+
+    <script>
+        let players = [];
+        let isClockwise = true;
+        let activePlayerIndex = null;
+        let gameOver = false;
+        let calcExpression = "";
+        let wakeLock = null;
+        let currentLogo = 1; // 1 = No Mercy (1000 Poin), 2 = Express (250 Poin)
+
+        let timerInterval = null;
+        let secondsElapsed = 0;
+
+        const clickSound = document.getElementById('clickSound');
+        const bgMusic = document.getElementById('bgMusic');
+
+        function playClick() {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
+        }
+
+        // Fungsi Ganti Logo Instan tanpa Animasi dan Pencatatan Mode
+        function toggleLogo() {
+            const logoImg = document.getElementById('mainLogo');
+            if (currentLogo === 1) {
+                logoImg.src = 'logo2.png';
+                currentLogo = 2;
+            } else {
+                logoImg.src = 'logo.png';
+                currentLogo = 1;
+            }
+        }
+
+        async function startApp() {
+            playClick();
+            bgMusic.play().catch(e => {});
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (err) {}
+            showScreen('screen-count');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.container > div').forEach(div => {
+                if (!div.classList.contains('number-overlay')) {
+                    div.classList.add('hidden');
+                    div.classList.remove('fade-in');
+                }
+            });
+            const targetScreen = document.getElementById(screenId);
+            targetScreen.classList.remove('hidden');
+            void targetScreen.offsetWidth;
+            targetScreen.classList.add('fade-in');
+        }
+
+        function setupPlayers() {
+            const count = document.getElementById('playerCount').value;
+            if (count < 2) return alert("Minimal 2 pemain!");
+            const container = document.getElementById('playerInputs');
+            container.innerHTML = "";
+            for (let i = 1; i <= count; i++) {
+                container.innerHTML += `<input type="text" placeholder="Nama Pemain ${i}" class="p-name">`;
+            }
+            showScreen('screen-names');
+        }
+
+        function spinFirstPlayer() {
+            const nameInputs = document.querySelectorAll('.p-name');
+            players = Array.from(nameInputs).map((input, idx) => input.value || `Pemain ${idx + 1}`);
+            let counter = 0;
+            let interval = setInterval(() => {
+                document.getElementById('firstPlayer').innerText = players[counter % players.length];
+                counter++;
+            }, 80)
+            setTimeout(() => {
+                clearInterval(interval);
+                const winnerIdx = Math.floor(Math.random() * players.length);
+                document.getElementById('firstPlayer').innerText = players[winnerIdx];
+                document.getElementById('btnAfterSpin').classList.remove('hidden');
+                document.getElementById('btnAfterSpin').classList.add('fade-in');
+            }, 1500);
+        }
+
+        function startGame() {
+            gameOver = false;
+            document.getElementById('winMessage').classList.add('hidden');
+            const scoreList = document.getElementById('finalScoreList');
+            scoreList.innerHTML = "";
+            
+            // Logika sembunyikan tombol 250 jika Logo 2 (Express) dipilih
+            const hideBtn250 = (currentLogo === 2) ? 'style="display:none;"' : '';
+
+            players.forEach((name, index) => {
+                scoreList.innerHTML += `
+                <div class="player-card fade-in">
+                    <div class="player-info">
+                        <span class="player-name">${name}</span>
+                        <input type="number" class="score-input" id="score-${index}" value="0" readonly>
+                    </div>
+                    <div class="quick-buttons">
+                        <button class="btn-small action-btn" onclick="playClick(); addScore(${index}, 20)">+20</button>
+                        <button class="btn-small action-btn" onclick="playClick(); addScore(${index}, 50)">+50</button>
+                        <button class="btn-small action-btn" onclick="playClick(); openNumberPicker(${index})" style="background:#444">0-9</button>
+                        <button class="btn-small action-btn" onclick="playClick(); addScore(${index}, 250)" ${hideBtn250}>+250</button>
+                    </div>
+                </div>
+            `;
+            });
+            showScreen('screen-game');
+            startTimer();
+        }
+
+        function startTimer() {
+            stopTimer();
+            secondsElapsed = 0;
+            document.getElementById('gameTimer').innerText = "00:00";
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('gameTimer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        function addScore(index, val) {
+            if (gameOver) return;
+            const input = document.getElementById(`score-${index}`);
+            let currentScore = parseInt(input.value) + val;
+            input.value = currentScore;
+            
+            // Mode Logo 2 = 250 poin, Mode Logo 1 = 1000 poin
+            let winThreshold = (currentLogo === 2) ? 250 : 1000;
+
+            if (currentScore >= winThreshold) {
+                declareWinner(players[index]);
+            }
+        }
+
+        function declareWinner(name) {
+            gameOver = true;
+            stopTimer();
+            const msg = document.getElementById('winMessage');
+            msg.innerText = `${name} MENANG`;
+            msg.classList.remove('hidden');
+            msg.classList.add('fade-in');
+            document.querySelectorAll('.action-btn').forEach(btn => btn.disabled = true);
+            document.getElementById('btnReverse').disabled = true;
+        }
+
+        function openNumberPicker(index) {
+            if (gameOver) return;
+            activePlayerIndex = index;
+            calcExpression = "";
+            renderPicker();
+            const picker = document.getElementById('numberPicker');
+            picker.classList.remove('hidden');
+            picker.classList.remove('overlay-popup');
+            void picker.offsetWidth;
+            picker.classList.add('overlay-popup');
+        }
+
+        function renderPicker() {
+            const picker = document.getElementById('numberPicker');
+            picker.innerHTML = `<div class="calc-display">${calcExpression || '0'}</div>`;
+            for (let i = 1; i <= 9; i++) {
+                picker.innerHTML += `<button class="num-btn" onclick="playClick(); pressNum(${i})">${i}</button>`;
+            }
+            picker.innerHTML += `<button class="num-btn add-btn" onclick="playClick(); pressPlus()">+</button>`;
+            picker.innerHTML += `<button class="num-btn" onclick="playClick(); pressNum(0)">0</button>`;
+            picker.innerHTML += `<button class="num-btn equal-btn" onclick="playClick(); calculateFinal()">=</button>`;
+            picker.innerHTML += `<button class="num-btn close-btn" onclick="playClick(); closePicker()">TUTUP</button>`;
+        }
+
+        function pressNum(n) {
+            calcExpression += n.toString();
+            renderPicker();
+        }
+
+        function pressPlus() {
+            if (calcExpression !== "" && !calcExpression.endsWith("+")) {
+                calcExpression += "+";
+                renderPicker();
+            }
+        }
+
+        function calculateFinal() {
+            if (calcExpression === "") return;
+            try {
+                let cleanExpr = calcExpression.endsWith("+") ? calcExpression.slice(0, -1) : calcExpression;
+                let result = eval(cleanExpr);
+                if (!isNaN(result)) {
+                    addScore(activePlayerIndex, parseInt(result));
+                    closePicker();
+                }
+            } catch (e) {
+                calcExpression = "";
+                renderPicker();
+            }
+        }
+
+        function closePicker() {
+            document.getElementById('numberPicker').classList.add('hidden');
+        }
+
+        function toggleReverse() {
+            if (gameOver) return;
+            const spinImage = document.getElementById('spinImage');
+            const text = document.getElementById('currentDirection');
+            isClockwise = !isClockwise;
+            if (isClockwise) {
+                spinImage.src = "spin.png";
+                spinImage.className = "clockwise";
+                text.innerText = "Arah: Searah Jarum Jam";
+            } else {
+                spinImage.src = "spin2.png";
+                spinImage.className = "counter-clockwise";
+                text.innerText = "Arah: Berlawanan Jarum Jam";
+            }
+        }
+
+        async function toggleWakeLock() {
+            playClick();
+            const btn = document.getElementById('btnWakeLock');
+            if (!wakeLock) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    btn.innerText = "STAY AWAKE: ON";
+                    btn.classList.add('active-status');
+                    wakeLock.addEventListener('release', () => {
+                        wakeLock = null;
+                        btn.innerText = "STAY AWAKE: OFF";
+                        btn.classList.remove('active-status');
+                    });
+                } catch (err) {}
+            } else {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        }
+
+        function resetPointsOnly() {
+            playClick();
+            gameOver = false;
+            startTimer();
+            document.getElementById('winMessage').classList.add('hidden');
+            document.getElementById('btnReverse').disabled = false;
+            document.querySelectorAll('.score-input').forEach(input => input.value = 0);
+            document.querySelectorAll('.action-btn').forEach(btn => btn.disabled = false);
+        }
+
+        function goToMainMenu() {
+            playClick();
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+            stopTimer();
+            if (document.fullscreenElement) document.exitFullscreen();
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+            showScreen('screen-menu');
+            document.getElementById('btnAfterSpin').classList.add('hidden');
+            document.getElementById('firstPlayer').innerText = "?";
+            document.getElementById('btnReverse').disabled = false;
+        }
+    </script>
+</body>
+
+</html>
